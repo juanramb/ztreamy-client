@@ -12,22 +12,19 @@ function mylog(myEvent){
 }
 var ztreamy = require('../index.js');
 var options = {url: 'http://localhost:9000/events/stream'};
-//var ztreamyClient = ztreamy.client(options);
-//ztreamyClient.onEvent(mylog);
 
-//var zp = ztreamy.parser();
 zc=ztreamy.client(options);
-//zc.on('ztreamyEvent',mylog);
+
 var events=headers=bodys = 0;
-zc.on('ztreamyEvent',function(parsed){
+zc.onEvent(function(parsed){
   events++;
   if (events > 3)
-    rs.emit('end');
+    zc.emit('end');
   log.info('Evento parseado: ',inspect(parsed));
 
 })
 zc.on('end',function(){
-  console.log('Lines: %d, Events: %d',lines, events);
-  console.log('Obj events: %d',objs.length);
+  console.log('Obj events: %d',events);
+  process.exit();
 })
 
