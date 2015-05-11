@@ -1,6 +1,6 @@
 {
   "name": "ztreamy-client",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Ztreamy client for nodejs",
   "main": "index.js",
   "repository": "https://github.com/juanramb/ztreamy-client.git",
@@ -25,7 +25,7 @@
   },
   "scripts": {
     "lint": "./node_modules/.bin/jshint ./index.js --reporter=./node_modules/jshint-full-path/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/.bin/mocha"
   },
   "author": "Juan Ramón Martín, robejrm at gmail.com",
   "license": "GPLv3"
