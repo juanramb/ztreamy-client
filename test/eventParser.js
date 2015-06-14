@@ -66,8 +66,90 @@ describe('EventParser', function () {
       });
       ep.on('end', function () {
         assert.equal(numOfEvents, 1);
+        assert.equal(events.length,1);
         assert.equal(events[0].header.header1, 'header1content');
-        
+        assert.equal(events[0].header.header2, 'header2content');
+        assert.equal(events[0].header.header3, 'header3content');
+        assert.equal(events[0].header['Body-Length'], 0);
+        done();
+      });
+    }
+    catch (error) {
+      console.log('Error creating eventParser: ',error);
+    }
+  });
+  it('Should decode a single event with nonempty body', function (done) {
+    prepareMocks();
+    //wtf! rstrMock.push('\r\n');
+    rstrMock.push('header1: header1content\r\n');
+    rstrMock.push('header2: header2content\r\n');
+    rstrMock.push('header3: header3content\r\n');
+    var body = '1asdfet34565464';
+    rstrMock.push('Body-Length: '+body.length+'\r\n');
+    rstrMock.push(body);
+    rstrMock.push('\r\n\r\n');
+    rstrMock.push('header11: header11content\r\n');
+    rstrMock.push(null);
+    try {
+      var numOfEvents = 0;
+      var events = [];
+      var ep = new EventParser({stream: rstrMock});
+      
+      ep.on('parsedEvent', function (ze) {
+        numOfEvents++;
+        events.push(ze);
+      });
+      ep.on('end', function () {
+        assert.equal(numOfEvents, 1);
+        assert.equal(events.length,1);
+        assert.equal(events[0].header.header1, 'header1content');
+        assert.equal(events[0].header.header2, 'header2content');
+        assert.equal(events[0].header.header3, 'header3content');
+        assert.equal(events[0].header['Body-Length'], 15);
+        assert.equal(events[0].body, body);
+        done();
+      });
+    }
+    catch (error) {
+      console.log('Error creating eventParser: ',error);
+    }
+  });
+  it('Should decode a two events with empty body', function (done) {
+    prepareMocks();
+    //wtf! rstrMock.push('\r\n');
+    rstrMock.push('header11: header11content\r\n');
+    rstrMock.push('header12: header12content\r\n');
+    rstrMock.push('header13: header13content\r\n');
+    rstrMock.push('Body-Length: 0\r\n');
+    rstrMock.push('\r\n');
+    rstrMock.push('header21: header21content\r\n');
+    rstrMock.push('header22: header22content\r\n');
+    rstrMock.push('header23: header23content\r\n');
+    rstrMock.push('header24: header24content\r\n');
+    rstrMock.push('Body-Length: 0\r\n');
+    rstrMock.push('\r\n');
+    rstrMock.push(null);
+    try {
+      var numOfEvents = 0;
+      var events = [];
+      var ep = new EventParser({stream: rstrMock});
+      
+      ep.on('parsedEvent', function (ze) {
+        numOfEvents++;
+        events.push(ze);
+      });
+      ep.on('end', function () {
+        assert.equal(numOfEvents, 2);
+        assert.equal(events.length,2);
+        assert.equal(events[0].header.header11, 'header11content');
+        assert.equal(events[0].header.header12, 'header12content');
+        assert.equal(events[0].header.header13, 'header13content');
+        assert.equal(events[0].header['Body-Length'], 0);
+        assert.equal(events[1].header.header21, 'header21content');
+        assert.equal(events[1].header.header22, 'header22content');
+        assert.equal(events[1].header.header23, 'header23content');
+        assert.equal(events[1].header.header24, 'header24content');
+        assert.equal(events[1].header['Body-Length'], 0);
         done();
       });
     }
