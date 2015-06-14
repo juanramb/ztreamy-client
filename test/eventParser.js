@@ -157,6 +157,42 @@ describe('EventParser', function () {
       console.log('Error creating eventParser: ',error);
     }
   });
+  it('Should clean initial header with garbled text before Event-Id', function (done) {
+    prepareMocks();
+    //wtf! rstrMock.push('\r\n');
+    rstrMock.push('fasdfasdf.c: 5 gcc asadfased Event-Id: MyEventId\r\n');
+    rstrMock.push('header2: header2content\r\n');
+    rstrMock.push('header3: header3content\r\n');
+    var body = '1asdfet34565464';
+    rstrMock.push('Body-Length: '+body.length+'\r\n');
+    rstrMock.push(body);
+    rstrMock.push('\r\n\r\n');
+    rstrMock.push('header11: header11content\r\n');
+    rstrMock.push(null);
+    try {
+      var numOfEvents = 0;
+      var events = [];
+      var ep = new EventParser({stream: rstrMock});
+      
+      ep.on('parsedEvent', function (ze) {
+        numOfEvents++;
+        events.push(ze);
+      });
+      ep.on('end', function () {
+        assert.equal(numOfEvents, 1);
+        assert.equal(events.length,1);
+        assert.equal(events[0].header['Event-Id'], 'MyEventId');
+        assert.equal(events[0].header.header2, 'header2content');
+        assert.equal(events[0].header.header3, 'header3content');
+        assert.equal(events[0].header['Body-Length'], 15);
+        assert.equal(events[0].body, body);
+        done();
+      });
+    }
+    catch (error) {
+      console.log('Error creating eventParser: ',error);
+    }
+  });
 
 });
 
