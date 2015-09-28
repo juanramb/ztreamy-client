@@ -97,7 +97,7 @@ ZtreamyClient.prototype.onError = function onError (error) {
 }
 ZtreamyClient.prototype.connect = function(delay,callback){
   var self = this;
-  log.info("Url for ZtreamyClient connect: ",self._options.url);
+  log.info('Url for ZtreamyClient connect: ',self._options.url);
   /*if (self._stream)
     delete self._stream;
     */
