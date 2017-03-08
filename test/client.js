@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 var log = require('winston')
 var fs = require('fs')
-var split = require('split')
+var split = require('split2')
 var th2 = require('through2');
 var request = require('request');
 var inspect = require('util').inspect
