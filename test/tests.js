@@ -1,1 +1,2 @@
-require('./eventParser.js')
+require('./ztreamyClient.spec');
+require('./eventParser');

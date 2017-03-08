@@ -5,13 +5,13 @@
   "main": "index.js",
   "repository": "https://github.com/juanramb/ztreamy-client.git",
   "dependencies": {
-    "request": "~2.44.0",
-    "event-stream": "~3.1.7",
-    "winston": "~0.8.1",
     "debug": "~2.1.0",
+    "event-stream": "~3.1.7",
     "q": "~1.1.1",
-    "split": "~0.3.1",
-    "through2": "~0.6.3"
+    "request": "~2.44.0",
+    "split2": "^2.1.1",
+    "through2": "~0.6.3",
+    "winston": "~0.8.1"
   },
   "devDependencies": {
     "coveralls": "^2.11.4",
@@ -28,6 +28,7 @@
   "scripts": {
     "lint": "./node_modules/.bin/jshint ./index.js --reporter=./node_modules/jshint-full-path/index.js",
     "test": "./node_modules/.bin/mocha",
+    "cov": "./node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha -- -R spec",
     "test-cov": "./node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
   },
   "author": "Juan Ramón Martín, robejrm at gmail.com",

@@ -2,18 +2,9 @@ var assert = require('assert'),
     sinon  = require('sinon'),
     rewire = require('rewire'),
     events = require('events'),
-    stream = require('stream'),
+    strmocks = require('./streamMocks'),
     zclient = require('../index'),
     EventParser = require('../lib/eventParser');
-
-var wstrMock;
-var rstrMock;
-function prepareMocks() {
-  wstrMock = new stream.Writable;
-  rstrMock = new stream.Readable;
-
-  //eventParser = new EventParser({stream: wstrMock});
-}
 
 describe('EventParser', function () {
   it('Should throw an error if no stream in options', function (done) {
@@ -33,12 +24,12 @@ describe('EventParser', function () {
     }
   });
   it('Should accept a readable stream in options', function (done) {
-    prepareMocks();
-    rstrMock.push('adsfadsfasdf');
-    rstrMock.push(null);
+    strmocks.prepareMocks();
+    strmocks.rstr.push('adsfadsfasdf');
+    strmocks.rstr.push(null);
     try {
-      //var ep = new EventParser({stream: rstrMock});
-      var ep = new EventParser({stream: rstrMock});
+      //var ep = new EventParser({stream: strmocks.rstr});
+      var ep = new EventParser({stream: strmocks.rstr});
       done();
     }
     catch (error) {
@@ -46,20 +37,20 @@ describe('EventParser', function () {
     }
   });
   it('Should decode a single event with empty body', function (done) {
-    prepareMocks();
-    //wtf! rstrMock.push('\r\n');
-    rstrMock.push('header1: header1content\r\n');
-    rstrMock.push('header2: header2content\r\n');
-    rstrMock.push('header3: header3content\r\n');
-    rstrMock.push('Body-Length: 0\r\n');
-    rstrMock.push('\r\n');
-    rstrMock.push('header11: header11content\r\n');
-    rstrMock.push(null);
+    strmocks.prepareMocks();
+    //wtf! strmocks.rstr.push('\r\n');
+    strmocks.rstr.push('header1: header1content\r\n');
+    strmocks.rstr.push('header2: header2content\r\n');
+    strmocks.rstr.push('header3: header3content\r\n');
+    strmocks.rstr.push('Body-Length: 0\r\n');
+    strmocks.rstr.push('\r\n');
+    strmocks.rstr.push('header11: header11content\r\n');
+    strmocks.rstr.push(null);
     try {
       var numOfEvents = 0;
       var events = [];
-      var ep = new EventParser({stream: rstrMock});
-      
+      var ep = new EventParser({stream: strmocks.rstr});
+
       ep.on('parsedEvent', function (ze) {
         numOfEvents++;
         events.push(ze);
@@ -79,22 +70,22 @@ describe('EventParser', function () {
     }
   });
   it('Should decode a single event with nonempty body', function (done) {
-    prepareMocks();
-    //wtf! rstrMock.push('\r\n');
-    rstrMock.push('header1: header1content\r\n');
-    rstrMock.push('header2: header2content\r\n');
-    rstrMock.push('header3: header3content\r\n');
+    strmocks.prepareMocks();
+    //wtf! strmocks.rstr.push('\r\n');
+    strmocks.rstr.push('header1: header1content\r\n');
+    strmocks.rstr.push('header2: header2content\r\n');
+    strmocks.rstr.push('header3: header3content\r\n');
     var body = '1asdfet34565464';
-    rstrMock.push('Body-Length: '+body.length+'\r\n');
-    rstrMock.push(body);
-    rstrMock.push('\r\n\r\n');
-    rstrMock.push('header11: header11content\r\n');
-    rstrMock.push(null);
+    strmocks.rstr.push('Body-Length: '+body.length+'\r\n');
+    strmocks.rstr.push(body);
+    strmocks.rstr.push('\r\n\r\n');
+    strmocks.rstr.push('header11: header11content\r\n');
+    strmocks.rstr.push(null);
     try {
       var numOfEvents = 0;
       var events = [];
-      var ep = new EventParser({stream: rstrMock});
-      
+      var ep = new EventParser({stream: strmocks.rstr});
+
       ep.on('parsedEvent', function (ze) {
         numOfEvents++;
         events.push(ze);
@@ -115,25 +106,25 @@ describe('EventParser', function () {
     }
   });
   it('Should decode a two events with empty body', function (done) {
-    prepareMocks();
-    //wtf! rstrMock.push('\r\n');
-    rstrMock.push('header11: header11content\r\n');
-    rstrMock.push('header12: header12content\r\n');
-    rstrMock.push('header13: header13content\r\n');
-    rstrMock.push('Body-Length: 0\r\n');
-    rstrMock.push('\r\n');
-    rstrMock.push('header21: header21content\r\n');
-    rstrMock.push('header22: header22content\r\n');
-    rstrMock.push('header23: header23content\r\n');
-    rstrMock.push('header24: header24content\r\n');
-    rstrMock.push('Body-Length: 0\r\n');
-    rstrMock.push('\r\n');
-    rstrMock.push(null);
+    strmocks.prepareMocks();
+    //wtf! strmocks.rstr.push('\r\n');
+    strmocks.rstr.push('header11: header11content\r\n');
+    strmocks.rstr.push('header12: header12content\r\n');
+    strmocks.rstr.push('header13: header13content\r\n');
+    strmocks.rstr.push('Body-Length: 0\r\n');
+    strmocks.rstr.push('\r\n');
+    strmocks.rstr.push('header21: header21content\r\n');
+    strmocks.rstr.push('header22: header22content\r\n');
+    strmocks.rstr.push('header23: header23content\r\n');
+    strmocks.rstr.push('header24: header24content\r\n');
+    strmocks.rstr.push('Body-Length: 0\r\n');
+    strmocks.rstr.push('\r\n');
+    strmocks.rstr.push(null);
     try {
       var numOfEvents = 0;
       var events = [];
-      var ep = new EventParser({stream: rstrMock});
-      
+      var ep = new EventParser({stream: strmocks.rstr});
+
       ep.on('parsedEvent', function (ze) {
         numOfEvents++;
         events.push(ze);
@@ -158,22 +149,22 @@ describe('EventParser', function () {
     }
   });
   it('Should clean initial header with garbled text before Event-Id', function (done) {
-    prepareMocks();
-    //wtf! rstrMock.push('\r\n');
-    rstrMock.push('fasdfasdf.c: 5 gcc asadfased Event-Id: MyEventId\r\n');
-    rstrMock.push('header2: header2content\r\n');
-    rstrMock.push('header3: header3content\r\n');
+    strmocks.prepareMocks();
+    //wtf! strmocks.rstr.push('\r\n');
+    strmocks.rstr.push('fasdfasdf.c: 5 gcc asadfased Event-Id: MyEventId\r\n');
+    strmocks.rstr.push('header2: header2content\r\n');
+    strmocks.rstr.push('header3: header3content\r\n');
     var body = '1asdfet34565464';
-    rstrMock.push('Body-Length: '+body.length+'\r\n');
-    rstrMock.push(body);
-    rstrMock.push('\r\n\r\n');
-    rstrMock.push('header11: header11content\r\n');
-    rstrMock.push(null);
+    strmocks.rstr.push('Body-Length: '+body.length+'\r\n');
+    strmocks.rstr.push(body);
+    strmocks.rstr.push('\r\n\r\n');
+    strmocks.rstr.push('header11: header11content\r\n');
+    strmocks.rstr.push(null);
     try {
       var numOfEvents = 0;
       var events = [];
-      var ep = new EventParser({stream: rstrMock});
-      
+      var ep = new EventParser({stream: strmocks.rstr});
+
       ep.on('parsedEvent', function (ze) {
         numOfEvents++;
         events.push(ze);
