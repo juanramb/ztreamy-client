@@ -9,7 +9,7 @@ function eventParser(options){
     return new EventParser(options);
   else{
     //stdin
-		console.log('using stdin');
+		console.error('using stdin');
     return new EventParser({stream : fs.createReadStream('/dev/stdin')});
   }
 }
