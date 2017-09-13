@@ -1,6 +1,6 @@
 {
   "name": "ztreamy-client",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Ztreamy client for nodejs",
   "main": "index.js",
   "repository": "https://github.com/juanramb/ztreamy-client.git",
